@@ -9,21 +9,19 @@ export type Sound = {
     description: string;
 };
 
-type SoundConfig = {
-    [key: string]: number;
-};
+export type SoundConfig = Partial<Record<SoundId, number>>;
 
-type Preset = {
+export type Preset = {
     name: string;
-    icon: string;
+    icon?: string;
     sounds: SoundConfig;
 };
 
-type PresetsObject = {
+export type PresetsObject = {
     [key: string]: Preset;
 };
 
-export const sounds: Sound[] = [
+export const sounds = [
     {
         id: "rain",
         name: "Rain",
@@ -88,7 +86,7 @@ export const sounds: Sound[] = [
         file: "night.mp3",
         description: "Crickets and night sounds",
     },
-];
+] as const satisfies readonly Sound[];
 
 // Default preset config
 export const defaultPresets: PresetsObject = {
@@ -120,6 +118,8 @@ export const defaultPresets: PresetsObject = {
         },
     },
 };
+
+export type SoundId = (typeof sounds)[number]["id"];
 // // Helper functions
 
 // function createSound(

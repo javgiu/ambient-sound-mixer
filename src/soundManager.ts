@@ -41,6 +41,7 @@ export class SoundManager {
                 console.log(`Playing: ${soundId}`);
                 this.soundsPlaying++;
                 this.updateState();
+                console.log(this.isPlaying);
                 return true;
             } catch (error) {
                 console.error(`Failed to play ${soundId}`, error);
@@ -99,6 +100,18 @@ export class SoundManager {
                 audio.pause();
                 this.soundsPlaying--;
             }
+        }
+        this.updateState();
+    }
+
+    // Reset all sounds
+    resetAll() {
+        for (const audio of this.audioElements.values()) {
+            if (!audio.paused) {
+                audio.pause();
+                this.soundsPlaying--;
+            }
+            audio.currentTime = 0; // Reset to beggining
         }
         this.updateState();
     }

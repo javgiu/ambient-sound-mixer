@@ -2,15 +2,19 @@ import type { Sound } from "./soundData";
 
 export class UI {
     soundCardsContainer: HTMLElement;
-    masterVolumeSlider: HTMLElement;
+    masterVolumeSlider: HTMLInputElement;
     masterVolumeValue: HTMLElement;
     playPauseButton: HTMLElement;
-    resetButton: HTMLElement;
+    resetButton: HTMLButtonElement;
     modal: HTMLElement;
     customPresetsContainer: HTMLElement;
     timerDisplay: HTMLElement;
-    timerSelect: HTMLElement;
+    timerSelect: HTMLSelectElement;
     themeToggle: HTMLElement;
+    showModalButton: HTMLButtonElement;
+    nameInput: HTMLInputElement;
+    cancelSaveButton: HTMLButtonElement;
+    confirmSaveButton: HTMLButtonElement;
 
     constructor() {
         this.soundCardsContainer = null;
@@ -23,19 +27,41 @@ export class UI {
         this.timerDisplay = null;
         this.timerSelect = null;
         this.themeToggle = null;
+        this.showModalButton = null;
+        this.nameInput = null;
+        this.cancelSaveButton = null;
+        this.confirmSaveButton = null;
     }
 
     init() {
         this.soundCardsContainer = document.querySelector(".grid");
-        this.masterVolumeSlider = document.getElementById("master-volume");
+        this.masterVolumeSlider = document.getElementById(
+            "master-volume",
+        ) as HTMLInputElement;
         this.masterVolumeValue = document.getElementById("master-volume-value");
         this.playPauseButton = document.getElementById("play-pause-all");
-        this.resetButton = document.getElementById("reset-all");
+        this.resetButton = document.getElementById(
+            "reset-all",
+        ) as HTMLButtonElement;
         this.modal = document.getElementById("save-preset-modal");
         this.customPresetsContainer = document.getElementById("custom-presets");
         this.timerDisplay = document.getElementById("timer-display");
-        this.timerSelect = document.getElementById("timer-select");
+        this.timerSelect = document.getElementById(
+            "timer-select",
+        ) as HTMLSelectElement;
         this.themeToggle = document.getElementById("theme-toggle");
+        this.showModalButton = document.getElementById(
+            "save-preset",
+        ) as HTMLButtonElement;
+        this.nameInput = document.getElementById(
+            "preset-name",
+        ) as HTMLInputElement;
+        this.cancelSaveButton = document.getElementById(
+            "cancel-save",
+        ) as HTMLButtonElement;
+        this.confirmSaveButton = document.getElementById(
+            "confirm-save",
+        ) as HTMLButtonElement;
     }
 
     createSoundCard(sound: Sound) {
@@ -79,8 +105,27 @@ export class UI {
         return card;
     }
 
+    // Create custom preset button
+    createCustomPresetButton(name: string, presetId: string) {
+        const button = document.createElement("button");
+
+        button.className =
+            "custom-preset-btn bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-all duration-300 relative group";
+
+        button.dataset.preset = presetId;
+        button.innerHTML = `
+            <i class="fas fa-star mr-2 text-yellow-400"></i> 
+            ${name}
+            <button type="button" class="delete-preset flex items-center justify-center absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer" data-preset="${presetId}"> 
+                <i class="fas fa-times text-xs text-white mr-px"></i>
+            </button>
+            
+        `;
+        return button;
+    }
+
     // Render all sound cards
-    renderSoundCards(sounds: Sound[]) {
+    renderSoundCards(sounds: readonly Sound[]) {
         this.soundCardsContainer.innerHTML = "";
         sounds.forEach((sound) => {
             const card = this.createSoundCard(sound);
@@ -148,5 +193,121 @@ export class UI {
             <i class="fas fa-${icon} mr-2"></i>
             <span>${icon.charAt(0).toUpperCase() + icon.slice(1)} All</span>
         `;
+    }
+
+    // Reset all UI elements to default state
+    reset() {
+        // Reset sliders to 0
+        const sliders = document.querySelectorAll(".sound-card .volume-slider");
+        sliders.forEach((slider: HTMLInputElement) => {
+            slider.value = "0";
+            const soundId = slider.dataset.sound;
+            // Reset play buttons state
+            this.updateSoundPlayButton(soundId, "play");
+
+            // Reset sliders display
+            this.updateVolumeDisplay(soundId, 0);
+
+            // Remove playing class from cards
+            const card = slider.closest(".sound-card");
+            card.classList.remove("playing");
+        });
+
+        // Reset play pause main button
+        this.updateMainPlayButton("play");
+
+        // Reset master volume to 100%
+        this.updateVolumeDisplay("master", 100);
+
+        this.setActivePreset();
+
+        this.resetTimerDropdown();
+    }
+
+    // Show save preset modal
+    showModal() {
+        this.modal.classList.remove("hidden");
+        this.modal.classList.add("flex");
+        document.getElementById("preset-name").focus();
+    }
+
+    // Hide save preset modal
+    hideModal() {
+        this.modal.classList.remove("flex");
+        this.modal.classList.add("hidden");
+        const input = document.getElementById(
+            "preset-name",
+        ) as HTMLInputElement;
+        input.value = "";
+    }
+
+    // Add custom preset to UI
+    addCustomPreset(name: string, presetId: string) {
+        const presetButton = this.createCustomPresetButton(name, presetId);
+        this.customPresetsContainer.appendChild(presetButton);
+    }
+
+    // Highlight active preset
+    setActivePreset(presetKey?: string) {
+        // Remove active class from all buttons
+        const activePresetButton = document.querySelector(".preset-active");
+
+        activePresetButton?.classList.remove("preset-active");
+
+        // Add active class to selected presets
+        const nextActivePreset = document.querySelector(
+            `[data-preset='${presetKey}']`,
+        );
+        nextActivePreset?.classList.add("preset-active");
+    }
+
+    // Remove custom preset from UI
+    removeCustomPreset(presetId: string) {
+        const button = document.querySelector(
+            `.custom-preset-btn[data-preset="${presetId}"]`,
+        );
+        if (button) {
+            button.remove();
+        }
+    }
+
+    // Reset timer dropdown
+    resetTimerDropdown() {
+        if (this.timerSelect) {
+            this.timerSelect.value = "0";
+        }
+    }
+
+    // Clear and hide timer display
+    clearTimerDisplay() {
+        if (this.timerDisplay) {
+            this.timerDisplay.textContent = "";
+            this.timerDisplay.classList.add("hidden");
+        }
+    }
+
+    // Update timer display
+    updateTimerDisplay(minutes: number, seconds: number) {
+        if (this.timerDisplay) {
+            if (minutes >= 0 || seconds >= 0) {
+                const formattedTime = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+                this.timerDisplay.textContent = formattedTime;
+                this.timerDisplay.classList.remove("hidden");
+            } else {
+                this.timerDisplay.classList.add("hidden");
+            }
+        }
+    }
+
+    // Toggle Theme
+    toggleTheme() {
+        const body = document.body;
+        if (body.classList.contains("light-theme")) {
+            body.classList.remove("light-theme");
+            this.themeToggle.innerHTML = `<i class="fas fa-sun text-yellow-300"></i>`;
+        } else {
+            body.classList.add("light-theme");
+            this.themeToggle.innerHTML = `<i class="fas fa-moon text-yellow-300"></i>`;
+        }
     }
 }
