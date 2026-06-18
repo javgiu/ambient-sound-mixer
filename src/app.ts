@@ -141,14 +141,14 @@ class AmbientMixer {
 
         // Handle save preset to show modal
         if (this.ui.showModalButton) {
-            this.ui.showModalButton.addEventListener("click", (e) => {
+            this.ui.showModalButton.addEventListener("click", () => {
                 this.showSavePresetModal();
             });
         }
 
         // HAndle cancel button in modal
         if (this.ui.cancelSaveButton) {
-            this.ui.cancelSaveButton.addEventListener("click", (e) => {
+            this.ui.cancelSaveButton.addEventListener("click", () => {
                 this.ui.hideModal();
             });
         }
@@ -164,7 +164,7 @@ class AmbientMixer {
 
         // Handle confirm button in modal
         if (this.ui.confirmSaveButton) {
-            this.ui.confirmSaveButton.addEventListener("click", (e) => {
+            this.ui.confirmSaveButton.addEventListener("click", () => {
                 this.saveCurrentPreset();
             });
         }

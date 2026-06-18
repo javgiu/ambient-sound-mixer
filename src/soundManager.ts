@@ -1,5 +1,3 @@
-import { sounds } from "./soundData";
-
 export class SoundManager {
     audioElements: Map<string, HTMLAudioElement>;
     isPlaying: boolean;
@@ -111,7 +109,7 @@ export class SoundManager {
                 audio.pause();
                 this.soundsPlaying--;
             }
-            audio.currentTime = 0; // Reset to beggining
+            audio.currentTime = 0; // Reset to beginning
         }
         this.updateState();
     }

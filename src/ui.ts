@@ -1,20 +1,20 @@
 import type { Sound } from "./soundData";
 
 export class UI {
-    soundCardsContainer: HTMLElement;
-    masterVolumeSlider: HTMLInputElement;
-    masterVolumeValue: HTMLElement;
-    playPauseButton: HTMLElement;
-    resetButton: HTMLButtonElement;
-    modal: HTMLElement;
-    customPresetsContainer: HTMLElement;
-    timerDisplay: HTMLElement;
-    timerSelect: HTMLSelectElement;
-    themeToggle: HTMLElement;
-    showModalButton: HTMLButtonElement;
-    nameInput: HTMLInputElement;
-    cancelSaveButton: HTMLButtonElement;
-    confirmSaveButton: HTMLButtonElement;
+    soundCardsContainer: HTMLElement | null;
+    masterVolumeSlider: HTMLInputElement | null;
+    masterVolumeValue: HTMLElement | null;
+    playPauseButton: HTMLElement | null;
+    resetButton: HTMLButtonElement | null;
+    modal: HTMLElement | null;
+    customPresetsContainer: HTMLElement | null;
+    timerDisplay: HTMLElement | null;
+    timerSelect: HTMLSelectElement | null;
+    themeToggle: HTMLElement | null;
+    showModalButton: HTMLButtonElement | null;
+    nameInput: HTMLInputElement | null;
+    cancelSaveButton: HTMLButtonElement | null;
+    confirmSaveButton: HTMLButtonElement | null;
 
     constructor() {
         this.soundCardsContainer = null;
