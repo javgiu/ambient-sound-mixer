@@ -14,7 +14,7 @@ export class PresetManager {
     }
 
     // Load custom preset by ID
-    loadPreset(presetId) {
+    loadPreset(presetId: string) {
         return this.customPresets[presetId] || null;
     }
 

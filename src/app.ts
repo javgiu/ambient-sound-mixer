@@ -22,7 +22,8 @@ class AmbientMixer {
         this.presetManager = new PresetManager();
         this.timer = new Timer(
             () => this.onTimerComplete(),
-            (minutes, seconds) => this.ui.updateTimerDisplay(minutes, seconds),
+            (minutes: number, seconds: number) =>
+                this.ui.updateTimerDisplay(minutes, seconds),
         );
         this.currentSoundState = {};
         this.isInitialized = false;
@@ -69,8 +70,7 @@ class AmbientMixer {
             // Check if a play button was clicked
             if (target.closest(".play-btn")) {
                 const button = target.closest(".play-btn") as HTMLButtonElement;
-                const soundId = button.dataset.sound;
-                console.log(soundId);
+                const soundId = button.dataset.sound as string;
                 await this.toggleSound(soundId);
             }
 
@@ -80,7 +80,7 @@ class AmbientMixer {
                 const button = target.closest(
                     ".delete-preset",
                 ) as HTMLButtonElement;
-                const presetKey = button.dataset.preset;
+                const presetKey = button.dataset.preset as string;
                 this.deleteCustomPreset(presetKey);
                 return;
             }
@@ -90,7 +90,7 @@ class AmbientMixer {
                 const button = target.closest(
                     ".preset-btn",
                 ) as HTMLButtonElement;
-                const presetKey = button.dataset.preset;
+                const presetKey = button.dataset.preset as string;
                 this.loadPreset(presetKey);
             }
 
@@ -99,7 +99,7 @@ class AmbientMixer {
                 const button = target.closest(
                     ".custom-preset-btn",
                 ) as HTMLButtonElement;
-                const presetKey = button.dataset.preset;
+                const presetKey = button.dataset.preset as string;
                 this.loadPreset(presetKey, true);
             }
         });

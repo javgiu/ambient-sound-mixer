@@ -1,7 +1,7 @@
 export class Timer {
     duration: number;
     remaining: number;
-    intervalId: number;
+    intervalId: number | null;
     onComplete: Function;
     onTick: Function;
     isRunning: boolean;
